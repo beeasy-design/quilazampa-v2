@@ -28,6 +28,13 @@ export default function OnboardingPage() {
     setError('')
     if (!dog.name.trim()) { setError('Inserisci il nome del cane'); setLoading(false); return }
 
+    // Assicura che il profilo esista prima di salvare il cane
+    await supabase.from('profiles').upsert({
+      id: user.id,
+      username: user.email.split('@')[0],
+      city: '',
+    })
+
     const { error } = await supabase.from('dogs').insert({
       owner_id: user.id,
       name: dog.name.trim(),
